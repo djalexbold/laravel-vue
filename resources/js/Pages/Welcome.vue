@@ -1,17 +1,24 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {ref, shallowRef, markRaw} from 'vue';
 import {Link} from '@inertiajs/vue3';
+import test from '../Components/list.vue'
+import test2 from '../Components/add.vue'
 
 const username = ref('Alex Bold');
+const button = shallowRef(test)
+//const button = markRaw({test, test2})
+
 </script>
 
 <template>
     <v-app id="inspire">
         <v-app-bar scroll-behavior="hide">
             <Link href="/" class="title-main px-8">Hut IoT</Link>
-            <v-btn stacked>list</v-btn>
-            <v-btn stacked>Add</v-btn>
-            <v-btn stacked>About</v-btn>
+            <v-btn-toggle v-model="button">
+                <v-btn :value="test" stacked>list</v-btn>
+                <v-btn :value="test2" stacked>Add</v-btn>
+                <v-btn href="/about" stacked>About</v-btn>
+            </v-btn-toggle>
             <v-spacer></v-spacer>
             <v-btn class="text-none" stacked>
                 <v-badge inline color="error" content="12">
@@ -22,8 +29,10 @@ const username = ref('Alex Bold');
             <v-btn color="red" icon="mdi-login"/>
         </v-app-bar>
 
-        <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
-            <v-btn href="/about">dsf</v-btn>
+        <v-main class="d-flex align-center justify-center" style="min-height: 300px; background-color: #d2d7e1">
+            <KeepAlive>
+                <component :is="button"/>
+            </KeepAlive>
         </v-main>
 
         <v-footer height="30" app class="bg-grey-lighten-2 justify-center">
@@ -33,6 +42,19 @@ const username = ref('Alex Bold');
 </template>
 
 <style>
+::-webkit-scrollbar {
+    width: 0;
+}
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
+
 .title-main {
     font-family: 'Arial Black', cursive;
     font-weight: bold;

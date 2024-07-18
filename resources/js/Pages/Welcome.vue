@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import {ref, shallowRef, markRaw} from 'vue';
+import {ref, shallowRef} from 'vue';
 import {Link} from '@inertiajs/vue3';
 import test from '../Components/list.vue'
 import test2 from '../Components/add.vue'
 
 const username = ref('Alex Bold');
 const button = shallowRef(test)
-//const button = markRaw({test, test2})
 
 </script>
 
@@ -29,7 +28,7 @@ const button = shallowRef(test)
             <v-btn color="red" icon="mdi-login"/>
         </v-app-bar>
 
-        <v-main class="d-flex align-center justify-center" style="min-height: 300px; background-color: #d2d7e1">
+        <v-main class="flex align-center justify-center" style="min-height: 300px; background-color: #d2d7e1">
             <KeepAlive>
                 <component :is="button"/>
             </KeepAlive>

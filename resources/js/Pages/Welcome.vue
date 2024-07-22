@@ -2,10 +2,11 @@
 import {ref, shallowRef} from 'vue';
 import {Link} from '@inertiajs/vue3';
 import test from '../Components/list.vue'
-import test2 from '../Components/add.vue'
+import add from '../Components/add.vue'
+import start from '../Components/start.vue'
 
 const username = ref('Alex Bold');
-const button = shallowRef(test)
+const button = shallowRef(start)
 
 </script>
 
@@ -14,8 +15,9 @@ const button = shallowRef(test)
         <v-app-bar scroll-behavior="hide">
             <Link href="/" class="title-main px-8">Hut IoT</Link>
             <v-btn-toggle v-model="button">
+                <v-btn :value="start" stacked>start</v-btn>
                 <v-btn :value="test" stacked>list</v-btn>
-                <v-btn :value="test2" stacked>Add</v-btn>
+                <v-btn :value="add" stacked>Add</v-btn>
                 <v-btn href="/about" stacked>About</v-btn>
             </v-btn-toggle>
             <v-spacer></v-spacer>

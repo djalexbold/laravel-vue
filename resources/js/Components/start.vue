@@ -1,11 +1,12 @@
 <script lang="ts">
-import {defineComponent, ref} from "vue";
+import {defineComponent} from "vue";
 import axios from "axios";
 
 interface deviceType {
     name: string;
     title: string;
 }
+
 export default defineComponent({
     data() {
         return {
@@ -22,7 +23,7 @@ export default defineComponent({
         this.fetchDeviceList();
     },
     methods: {
-        fetchDeviceList() {
+         fetchDeviceList() {
             axios.get('api/devices')
                 .then((res) => {
                     this.devices = res.data;
@@ -37,6 +38,7 @@ export default defineComponent({
                     console.log(res);
                     this.device.name = '';
                     this.device.title = '';
+                    this.fetchDeviceList()
                 })
                 .catch((err) => console.error(err));
         },
@@ -83,12 +85,12 @@ export default defineComponent({
     <v-sheet max-width="600" class="ma-8">
 
         <div class="bg-blue" v-for="item in devices"
-            :key="item.id"
+             :key="item.id"
         >
             <strong>{{ item.name }}</strong>
             <div>{{ item.title }}</div>
             <v-btn flat @click="deleteDevice(item.id)">Delete</v-btn>
-            <v-divider class="ma-2" />
+            <v-divider class="ma-2"/>
         </div>
 
     </v-sheet>

@@ -6,7 +6,7 @@ import add from '../Components/add.vue'
 import start from '../Components/start.vue'
 
 const username = ref('Alex Bold');
-const button = shallowRef(start)
+const button = shallowRef(add)
 
 </script>
 

@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface deviceType {
     name: string;
-    title: string;
+    udi: string;
 }
 
 export default defineComponent({
@@ -14,7 +14,7 @@ export default defineComponent({
             devices: <any>[],
             device: {
                 name: '',
-                title: ''
+                udi: ''
             }
         }
     },
@@ -36,8 +36,8 @@ export default defineComponent({
             axios.post('api/devices', this.device)
                 .then((res) => {
                     console.log(res);
-                    this.device.name = '';
-                    this.device.title = '';
+                    this.device.name = ''
+                    this.device.udi = ''
                     this.fetchDeviceList()
                 })
                 .catch((err) => console.error(err));
@@ -67,7 +67,7 @@ export default defineComponent({
 
                 />
                 <v-text-field
-                    v-model="device.title"
+                    v-model="device.udi"
                     label="Титл"
                     name="title"
                     outlined dense
@@ -88,7 +88,7 @@ export default defineComponent({
              :key="item.id"
         >
             <strong>{{ item.name }}</strong>
-            <div>{{ item.title }}</div>
+            <div>{{ item.udi }}</div>
             <v-btn flat @click="deleteDevice(item.id)">Delete</v-btn>
             <v-divider class="ma-2"/>
         </div>

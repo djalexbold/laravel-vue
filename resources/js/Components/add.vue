@@ -1,30 +1,53 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
+import axios from "axios";
 
 export default defineComponent({
     data: () => ({
         hasSaved: false,
-
+        errorMessages: '',
+        isFormValid: undefined,
+        devName: null,
+        devModel: undefined,
+        udi: null,
+        device: {
+            name: '',
+            udi: ''
+        },
         states: [
-            { name: 'Florida', abbr: 'FL', id: 1 },
-            { name: 'Georgia', abbr: 'GA', id: 2 },
-            { name: 'Nebraska', abbr: 'NE', id: 3 },
-            { name: 'California', abbr: 'CA', id: 4 },
-            { name: 'New York', abbr: 'NY', id: 5 },
+            {name: 'esp-wroom-32', abbr: 'ESP-32', id: 1},
+            {name: 'Arduino Nano', abbr: 'ARDUINO', id: 2},
         ],
     }),
-
-    methods: {
-        customFilter (itemTitle, queryText, item) {
-            const textOne = item.raw.name.toLowerCase()
-            const textTwo = item.raw.abbr.toLowerCase()
-            const searchText = queryText.toLowerCase()
-
-            return textOne.indexOf(searchText) > -1 ||
-                textTwo.indexOf(searchText) > -1
+    computed: {
+        form() {
+            return {
+                name: '',
+                udi: ''
+            }
         },
-        save () {
-            this.hasSaved = true
+    },
+    watch: {
+        name() {
+            this.errorMessages = ''
+        },
+    },
+    methods: {
+        createDevice() {
+            axios.post('api/devices', this.device)
+                .then((res) => {
+                    this.devModel = res.data.devName;
+                    console.log(res);
+                    this.hasSaved = true
+                    this.resetForm()
+                })
+                .catch((err) => console.error(err));
+        },
+        resetForm() {
+            this.errorMessages = ''
+            Object.keys(this.form).forEach(f => {
+                (this.$refs[f] as any).reset()
+            })
         },
     },
 })
@@ -32,52 +55,60 @@ export default defineComponent({
 
 <template>
     <v-card
+        ref="form"
         class="ma-5"
         max-width="600"
     >
         <v-toolbar class="px-2" flat>
-            <v-icon size="x-large" icon="mdi-chip" />
+            <v-icon size="x-large" icon="mdi-chip"/>
             <v-toolbar-title class="font-weight-light">
                 Add Device
             </v-toolbar-title>
         </v-toolbar>
+        <v-form ref="form" v-model="isFormValid" @submit.prevent="createDevice()">
+            <v-card-text>
+                <v-text-field
+                    ref="name"
+                    v-model="device.name"
+                    :error-messages="errorMessages"
+                    label="Name"
+                    :rules="[() => !!device.name || 'This field is required']"
+                ></v-text-field>
 
-        <v-card-text>
-            <v-text-field
-                base-color="white"
-                label="Name"
-            ></v-text-field>
+                <v-text-field
+                    ref="udi"
+                    v-model="device.udi"
+                    label="UDI"
+                    max="8"
+                    :rules="[
+                      () => !!device.udi || 'This field is required',
+                      () => !!device.udi && device.udi.length == 8 || 'UDI must be 8 characters'
+                    ]"
+                ></v-text-field>
 
-            <v-autocomplete
-                :custom-filter="customFilter"
-                :items="states"
-                base-color="white"
-                item-title="name"
-                item-value="abbr"
-                label="State"
-            ></v-autocomplete>
-        </v-card-text>
+                <v-autocomplete
+                    v-model="devModel"
+                    :items="states"
+                    item-title="name"
+                    item-value="abbr"
+                    label="Model"
+                ></v-autocomplete>
+            </v-card-text>
 
-        <v-divider></v-divider>
+            <v-divider></v-divider>
 
-        <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn
-                @click="save"
-            >
-                Save
-            </v-btn>
-        </v-card-actions>
-
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :disabled="!isFormValid" text="Save" type="submit"/>
+            </v-card-actions>
+        </v-form>
         <v-snackbar
             v-model="hasSaved"
             :timeout="2000"
             location="bottom left"
             position="absolute"
             attach
-        >
-            Your profile has been updated
+        >Device {{ devModel }} added successfully
         </v-snackbar>
     </v-card>
 </template>

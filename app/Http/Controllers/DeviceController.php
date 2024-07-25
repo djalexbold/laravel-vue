@@ -27,7 +27,6 @@ class DeviceController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|max:100',
-            'title' => 'required|max:500'
         ]);
 
         // create record and pass in only fields that are fillable

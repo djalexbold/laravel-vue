@@ -2,6 +2,11 @@
 import {defineComponent} from 'vue';
 import axios from "axios";
 
+interface deviceType {
+    name: string;
+    udi: string;
+    id?: number|null
+}
 export default defineComponent({
     data: () => ({
         hasSaved: false,
@@ -13,7 +18,7 @@ export default defineComponent({
         device: {
             name: '',
             udi: ''
-        },
+        } as deviceType,
         states: [
             {name: 'esp-wroom-32', abbr: 'ESP-32', id: 1},
             {name: 'Arduino Nano', abbr: 'ARDUINO', id: 2},
@@ -34,10 +39,9 @@ export default defineComponent({
     },
     methods: {
         createDevice() {
-            axios.post('api/devices', this.device)
+             axios.post('api/devices', this.device)
                 .then((res) => {
                     this.devModel = res.data.devName;
-                    console.log(res);
                     this.hasSaved = true
                     this.resetForm()
                 })
@@ -47,7 +51,9 @@ export default defineComponent({
             this.errorMessages = ''
             Object.keys(this.form).forEach(f => {
                 (this.$refs[f] as any).reset()
+                this.$forceUpdate()
             })
+
         },
     },
 })
@@ -99,7 +105,7 @@ export default defineComponent({
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn :disabled="!isFormValid" text="Save" type="submit"/>
+                <v-btn :disabled="!isFormValid" text="Save" type="submit" />
             </v-card-actions>
         </v-form>
         <v-snackbar

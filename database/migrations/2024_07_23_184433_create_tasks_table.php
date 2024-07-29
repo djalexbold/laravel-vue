@@ -15,7 +15,13 @@ class CreateDevicesTable extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->increments('id');
-            $table->longtext('name');
+            $table->string('name');
+            $table->timestamps();
+        });
+        Schema::create('telemetry', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->json('properties');
             $table->timestamps();
         });
     }
